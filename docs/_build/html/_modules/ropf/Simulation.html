@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ropf.Simulation &mdash; ropf  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="ropf  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">ropf  documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ropf.Simulation</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">These are the definitions of classes to obtain a complete simulation model</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+
+<div class="viewcode-block" id="LoadModel"><a class="viewcode-back" href="../../ropf.html#ropf.Simulation.LoadModel">[docs]</a><span class="k">class</span> <span class="nc">LoadModel</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;This class contains the description of the loads in the network</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        active_load (ndarray): An array of active loads, with a column for each bus and a line for each time step.</span>
+<span class="sd">        reactive_load (ndarray): An array of reactive loads, with a column for each bus and a line for each time step.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_folder</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instance attributes are initialized to None and then method init_loadmodel is called to</span>
+<span class="sd">        populate the attributes</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_folder (string) : the path to the folder containing the input data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_load</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reactive_load</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_loadmodel</span><span class="p">(</span><span class="n">input_folder</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LoadModel.init_loadmodel"><a class="viewcode-back" href="../../ropf.html#ropf.Simulation.LoadModel.init_loadmodel">[docs]</a>    <span class="k">def</span> <span class="nf">init_loadmodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_folder</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method will populate a LoadModel object attributes by obtaining the relevant data in the input_folder</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_folder (string) : the path to the folder containing the input data</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A LoadModel Object with attributes corresponding to the input data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&quot;/LoadModel/active_load.csv&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">active_load</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">active_load</span> <span class="o">=</span> <span class="n">active_load</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file active_load.csv could not be located&#39;</span><span class="p">)</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&quot;/LoadModel/reactive_load.csv&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">reactive_load</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reactive_load</span> <span class="o">=</span> <span class="n">reactive_load</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file active_load.csv could not be located&#39;</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="DERModel"><a class="viewcode-back" href="../../ropf.html#ropf.Simulation.DERModel">[docs]</a><span class="k">class</span> <span class="nc">DERModel</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;This class contains the description of the DERs in the network</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        pv_inverter_power (ndarray) : A vector of installed photovoltaic inverter powers.</span>
+<span class="sd">        storage_inverter_power (ndarray) : A vector of installed storage inverter powers.</span>
+<span class="sd">        pv_set_points (ndarray) : An array of photovoltaic set points.</span>
+<span class="sd">        storage_inverter_power (ndarray) : A vector of storage set points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_folder</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instance attributes are initialized to None and then method init_loadmodel is called to populate the attributes</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_folder (string) : the path to the folder containing the input data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pv_inverter_power</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage_inverter_power</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pv_set_points</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage_set_points</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_dermodel</span><span class="p">(</span><span class="n">input_folder</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DERModel.init_dermodel"><a class="viewcode-back" href="../../ropf.html#ropf.Simulation.DERModel.init_dermodel">[docs]</a>    <span class="k">def</span> <span class="nf">init_dermodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_folder</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method will populate a DERModel object attributes by obtaining the relevant data in the input_folder</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_folder (string) : the path to the folder containing the input data</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A DERModel Object with attributes corresponding to the input data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&#39;/DERModel/pv_inverter.csv&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pv_inverter_power</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pv_inverter_power</span> <span class="o">=</span> <span class="n">pv_inverter_power</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file pv_inverter.csv could not be located&#39;</span><span class="p">)</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&#39;/DERModel/storage_inverter.csv&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">storage_inverter_power</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">storage_inverter_power</span> <span class="o">=</span> <span class="n">storage_inverter_power</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file storage_inverter.csv could not be located&#39;</span><span class="p">)</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&#39;/DERModel/pv_set_points.csv&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pv_set_points</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pv_set_points</span> <span class="o">=</span> <span class="n">pv_set_points</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file pv_set_points.csv could not be located&#39;</span><span class="p">)</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&#39;/DERModel/storage_set_points.csv&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">storage_set_points</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">storage_set_points</span> <span class="o">=</span> <span class="n">storage_set_points</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file storage_set_points.csv could not be located&#39;</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="NetworkModel"><a class="viewcode-back" href="../../ropf.html#ropf.Simulation.NetworkModel">[docs]</a><span class="k">class</span> <span class="nc">NetworkModel</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;This class contains the data relative to the network</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            from_node (ndarray): A vector of node IDs from which the lines are originating.</span>
+<span class="sd">            to_node (ndarray): A vector of node IDs to which the lines are ending.</span>
+<span class="sd">            resistance (ndarray): A vector of line resistance.</span>
+<span class="sd">            reactance (ndarray): A vector of line reactance.</span>
+<span class="sd">            current_limit (ndarray): An array of line current limit.</span>
+<span class="sd">            voltage_limit (ndarray): A vector of 2 elements representing the upper and lower bounds on voltage magnitude.</span>
+<span class="sd">            oltc_constraints (ndarray): A vector of 2 of or more elements. If its length is 2, a continuous model will.</span>
+<span class="sd">                be used for the On-Load Tap Changer, with the two values representing up and down limit of voltage.</span>
+<span class="sd">                downstream of the OLTC. If it is more than 2, a discrete model will be used, with the values.</span>
+<span class="sd">                representing the possible voltages</span>
+<span class="sd">            downstream of the OLTC</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_folder</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instance attributes are initialized to None and then method init_networkmodel is called to populate the attributes</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_folder (string) : the path to the folder containing the input data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_node</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_node</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reactance</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_limit</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voltage_limit</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oltc_constraints</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_networkmodel</span><span class="p">(</span><span class="n">input_folder</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NetworkModel.init_networkmodel"><a class="viewcode-back" href="../../ropf.html#ropf.Simulation.NetworkModel.init_networkmodel">[docs]</a>    <span class="k">def</span> <span class="nf">init_networkmodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_folder</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method will populate a NetworkModel object attributes by obtaining the relevant data in the input_folder</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_folder (string) : the path to the folder containing the input data</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A NetworkModel Object with attributes corresponding to the input data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&#39;/NetworkModel/from_to.csv&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">from_to</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">from_node</span> <span class="o">=</span> <span class="n">from_to</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">to_node</span> <span class="o">=</span> <span class="n">from_to</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file from_to.csv could not be located&#39;</span><span class="p">)</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&#39;/NetworkModel/reactance.csv&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">reactance</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reactance</span> <span class="o">=</span> <span class="n">reactance</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file reactance.csv could not be located&#39;</span><span class="p">)</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&#39;/NetworkModel/resistance.csv&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resistance</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span> <span class="o">=</span> <span class="n">resistance</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file resistance.csv could not be located&#39;</span><span class="p">)</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&#39;/NetworkModel/current_limit.csv&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">current_limit</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_limit</span> <span class="o">=</span> <span class="n">current_limit</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file current_limit.csv could not be located&#39;</span><span class="p">)</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&#39;/NetworkModel/voltage_limit.csv&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">voltage_limit</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">voltage_limit</span> <span class="o">=</span> <span class="n">voltage_limit</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file voltage_limit.csv could not be located&#39;</span><span class="p">)</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_folder</span> <span class="o">+</span> <span class="s">&#39;/NetworkModel/oltc_constraints.csv&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">oltc_constraints</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">oltc_constraints</span> <span class="o">=</span> <span class="n">oltc_constraints</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The input file oltc_constraints.csv could not be located&#39;</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../ropf.html#ropf.Simulation.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;This class contains the data necessary for a simulation</span>
+
+<span class="sd">    Attributes :</span>
+<span class="sd">        NetworkModel : A description of the network parameters.</span>
+<span class="sd">        LoadModel : A description of the loads in the network.</span>
+<span class="sd">        DERModel : A description of the DERs in the network.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_folder</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NetworkModel</span> <span class="o">=</span> <span class="n">NetworkModel</span><span class="p">(</span><span class="n">input_folder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LoadModel</span> <span class="o">=</span> <span class="n">LoadModel</span><span class="p">(</span><span class="n">input_folder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DERModel</span> <span class="o">=</span> <span class="n">DERModel</span><span class="p">(</span><span class="n">input_folder</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">ropf  documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Yassine Abdelouadoud.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
+    </div>
+  </body>
+</html>

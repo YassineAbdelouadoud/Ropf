@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ropf package &mdash; ropf  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ropf  documentation" href="index.html" />
+    <link rel="prev" title="Welcome to ropf’s documentation!" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to ropf’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ropf  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ropf-package">
+<h1>ropf package<a class="headerlink" href="#ropf-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ropf.Simulation">
+<span id="ropf-simulation-module"></span><h2>ropf.Simulation module<a class="headerlink" href="#module-ropf.Simulation" title="Permalink to this headline">¶</a></h2>
+<p>These are the definitions of classes to obtain a complete simulation model</p>
+<dl class="class">
+<dt id="ropf.Simulation.DERModel">
+<em class="property">class </em><code class="descclassname">ropf.Simulation.</code><code class="descname">DERModel</code><span class="sig-paren">(</span><em>input_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ropf/Simulation.html#DERModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ropf.Simulation.DERModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains the description of the DERs in the network</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>pv_inverter_power (ndarray) : A vector of installed photovoltaic inverter powers.
+storage_inverter_power (ndarray) : A vector of installed storage inverter powers.
+pv_set_points (ndarray) : An array of photovoltaic set points.
+storage_inverter_power (ndarray) : A vector of storage set points.</dd>
+</dl>
+<dl class="method">
+<dt id="ropf.Simulation.DERModel.init_dermodel">
+<code class="descname">init_dermodel</code><span class="sig-paren">(</span><em>input_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ropf/Simulation.html#DERModel.init_dermodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ropf.Simulation.DERModel.init_dermodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will populate a DERModel object attributes by obtaining the relevant data in the input_folder</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>input_folder (string) : the path to the folder containing the input data</dd>
+<dt>Returns:</dt>
+<dd>A DERModel Object with attributes corresponding to the input data</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ropf.Simulation.LoadModel">
+<em class="property">class </em><code class="descclassname">ropf.Simulation.</code><code class="descname">LoadModel</code><span class="sig-paren">(</span><em>input_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ropf/Simulation.html#LoadModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ropf.Simulation.LoadModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains the description of the loads in the network</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>active_load (ndarray): An array of active loads, with a column for each bus and a line for each time step.
+reactive_load (ndarray): An array of reactive loads, with a column for each bus and a line for each time step.</dd>
+</dl>
+<dl class="method">
+<dt id="ropf.Simulation.LoadModel.init_loadmodel">
+<code class="descname">init_loadmodel</code><span class="sig-paren">(</span><em>input_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ropf/Simulation.html#LoadModel.init_loadmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ropf.Simulation.LoadModel.init_loadmodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will populate a LoadModel object attributes by obtaining the relevant data in the input_folder</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>input_folder (string) : the path to the folder containing the input data</dd>
+<dt>Returns:</dt>
+<dd>A LoadModel Object with attributes corresponding to the input data</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ropf.Simulation.Model">
+<em class="property">class </em><code class="descclassname">ropf.Simulation.</code><code class="descname">Model</code><span class="sig-paren">(</span><em>input_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ropf/Simulation.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ropf.Simulation.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains the data necessary for a simulation</p>
+<dl class="docutils">
+<dt>Attributes :</dt>
+<dd>NetworkModel : A description of the network parameters.
+LoadModel : A description of the loads in the network.
+DERModel : A description of the DERs in the network.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="ropf.Simulation.NetworkModel">
+<em class="property">class </em><code class="descclassname">ropf.Simulation.</code><code class="descname">NetworkModel</code><span class="sig-paren">(</span><em>input_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ropf/Simulation.html#NetworkModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ropf.Simulation.NetworkModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains the data relative to the network</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><p class="first">from_node (ndarray): A vector of node IDs from which the lines are originating.
+to_node (ndarray): A vector of node IDs to which the lines are ending.
+resistance (ndarray): A vector of line resistance.
+reactance (ndarray): A vector of line reactance.
+current_limit (ndarray): An array of line current limit.
+voltage_limit (ndarray): A vector of 2 elements representing the upper and lower bounds on voltage magnitude.
+oltc_constraints (ndarray): A vector of 2 of or more elements. If its length is 2, a continuous model will.</p>
+<blockquote>
+<div>be used for the On-Load Tap Changer, with the two values representing up and down limit of voltage.
+downstream of the OLTC. If it is more than 2, a discrete model will be used, with the values.
+representing the possible voltages</div></blockquote>
+<p class="last">downstream of the OLTC</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="ropf.Simulation.NetworkModel.init_networkmodel">
+<code class="descname">init_networkmodel</code><span class="sig-paren">(</span><em>input_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ropf/Simulation.html#NetworkModel.init_networkmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ropf.Simulation.NetworkModel.init_networkmodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will populate a NetworkModel object attributes by obtaining the relevant data in the input_folder</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>input_folder (string) : the path to the folder containing the input data</dd>
+<dt>Returns:</dt>
+<dd>A NetworkModel Object with attributes corresponding to the input data</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ropf">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ropf" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ropf package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ropf.Simulation">ropf.Simulation module</a></li>
+<li><a class="reference internal" href="#module-ropf">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to ropf&#8217;s documentation!</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/ropf.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to ropf’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">ropf  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Yassine Abdelouadoud.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
+    </div>
+  </body>
+</html>
