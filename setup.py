@@ -25,5 +25,5 @@ setup(
     author='Yassine Abdelouadoud',
     author_email='yassine.abdelouadoud@gmail.com',
     description='Optimal Power Flow in Radial Networks',
-    install_requires=["numpy"]
+    install_requires=["numpy", "cvxpy"]
 )

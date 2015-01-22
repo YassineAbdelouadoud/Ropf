@@ -1,14 +1,4 @@
-__author__ = 'Yassine'
 import ropf.Simulation as Sim
-import os
-import pytest
-
-
-@pytest.fixture(scope="module")
-def init_model():
-    input_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "data"))
-    model = Sim.Model(input_folder)
-    return model
 
 
 def test_model_constructor(init_model):

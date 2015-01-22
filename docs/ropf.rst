@@ -12,11 +12,11 @@ ropf.Simulation module
     :undoc-members:
     :show-inheritance:
 
+ropf.Optimization module
+------------------------
 
-Module contents
----------------
-
-.. automodule:: ropf
+.. automodule:: ropf.Optimization
     :members:
     :undoc-members:
     :show-inheritance:
+

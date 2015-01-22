@@ -12,8 +12,8 @@ class LoadModel:
     """This class contains the description of the loads in the network
 
     Attributes:
-        active_load (ndarray): An array of active loads, with a column for each bus and a line for each time step.
-        reactive_load (ndarray): An array of reactive loads, with a column for each bus and a line for each time step.
+        | active_load (ndarray): An array of active loads, with a column for each bus and a line for each time step.
+        | reactive_load (ndarray): An array of reactive loads, with a column for each bus and a line for each time step.
     """
 
     def __init__(self, input_folder):
@@ -60,10 +60,10 @@ class DERModel:
     """This class contains the description of the DERs in the network
 
     Attributes:
-        pv_inverter_power (ndarray) : A vector of installed photovoltaic inverter powers.
-        storage_inverter_power (ndarray) : A vector of installed storage inverter powers.
-        pv_set_points (ndarray) : An array of photovoltaic set points.
-        storage_inverter_power (ndarray) : A vector of storage set points.
+        | pv_inverter_power (ndarray): A vector of installed photovoltaic inverter powers.
+        | storage_inverter_power (ndarray): A vector of installed storage inverter powers.
+        | pv_set_points (ndarray): An array of photovoltaic set points.
+        | storage_set_points (ndarray): A vector of storage set points.
     """
 
     def __init__(self, input_folder):
@@ -127,24 +127,26 @@ class NetworkModel:
     """This class contains the data relative to the network
 
         Attributes:
-            from_node (ndarray): A vector of node IDs from which the lines are originating.
-            to_node (ndarray): A vector of node IDs to which the lines are ending.
-            resistance (ndarray): A vector of line resistance.
-            reactance (ndarray): A vector of line reactance.
-            current_limit (ndarray): An array of line current limit.
-            voltage_limit (ndarray): A vector of 2 elements representing the upper and lower bounds on voltage magnitude.
-            oltc_constraints (ndarray): A vector of 2 of or more elements. If its length is 2, a continuous model will.
-                be used for the On-Load Tap Changer, with the two values representing up and down limit of voltage.
+            | from_node (ndarray): A vector of node IDs from which the lines are originating.
+            | to_node (ndarray): A vector of node IDs to which the lines are ending.
+            | resistance (ndarray): A vector of line resistance.
+            | reactance (ndarray): A vector of line reactance.
+            | current_limit (ndarray): An array of line current limit.
+            | voltage_limit (ndarray): A vector of 2 elements representing the upper and lower bounds on voltage
+                magnitude.
+            | oltc_constraints (ndarray): A vector of 2 of or more elements. If its length is 2, a continuous model
+                will be used for the On-Load Tap Changer, with the two values representing up and down limit of voltage.
                 downstream of the OLTC. If it is more than 2, a discrete model will be used, with the values.
                 representing the possible voltages
-            downstream of the OLTC
+            | downstream of the OLTC
 
     """
 
     def __init__(self, input_folder):
 
         """
-        Instance attributes are initialized to None and then method init_networkmodel is called to populate the attributes
+        Instance attributes are initialized to None and then method init_networkmodel is called to populate the
+        attributes
 
         Args:
             input_folder (string) : the path to the folder containing the input data
@@ -174,7 +176,7 @@ class NetworkModel:
 
         input_file = input_folder + '/NetworkModel/from_to.csv'
         try:
-            from_to = numpy.genfromtxt(input_file, delimiter=',')
+            from_to = numpy.genfromtxt(input_file, delimiter=',', dtype='int')
             self.from_node = from_to[0]
             self.to_node = from_to[1]
         except IOError:
@@ -220,9 +222,9 @@ class Model:
     """This class contains the data necessary for a simulation
 
     Attributes :
-        NetworkModel : A description of the network parameters.
-        LoadModel : A description of the loads in the network.
-        DERModel : A description of the DERs in the network.
+        | NetworkModel : A description of the network parameters.
+        | LoadModel : A description of the loads in the network.
+        | DERModel : A description of the DERs in the network.
     """
 
     def __init__(self, input_folder):
