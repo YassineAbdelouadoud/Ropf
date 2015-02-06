@@ -6,6 +6,7 @@ a second order cone relaxation <http://www.sciencedirect.com/science/article/pii
 """
 
 import cvxpy as cvx
+from cvxpy.constraints.second_order import SOC
 import numpy
 
 
@@ -57,8 +58,6 @@ def init_par(model):
         * reactive_load
         * pv_set_points
         * storage_set_points
-        * storage_upper_bounds
-        * storage_lower_bounds
         * oltc_lim
 
     Args :
@@ -77,7 +76,6 @@ def init_par(model):
 
     optpar = {'active_load': cvx.Parameter(node_cnt), 'reactive_load': cvx.Parameter(node_cnt),
               'pv_set_points': cvx.Parameter(node_cnt), 'storage_set_points': cvx.Parameter(node_cnt),
-              'storage_upper_bounds': cvx.Parameter(node_cnt), 'storage_lower_bounds': cvx.Parameter(node_cnt),
               'oltc_lim': cvx.Parameter(2)}
 
     return optpar
@@ -95,9 +93,11 @@ def set_constraints(model, optvar, optpar):
         A Constraint object
     """
 
-    constraint = power_flow_constraints(model, optvar, optpar)
+    constraints = power_flow_constraints(model, optvar, optpar) + \
+                  network_limits_constraints(model, optvar, optpar) + \
+                  der_injection_constraints(model, optvar, optpar)
 
-    return constraint
+    return constraints
 
 
 def power_flow_constraints(model, optvar, optpar):
@@ -149,9 +149,10 @@ def power_flow_constraints(model, optvar, optpar):
         # add the constraint corresponding to the convexified variable change P² + Q² = I*U. The constraint cannot be
         # modelled as it is, because of the I*U product. So we transform the rotated cone to a normal one by rotation
         # and the constraint becomes ||(2*P, 2*Q, U-I)||² - (U+I) <= 0
-        constraints.append(cvx.square(cvx.norm(cvx.vstack(2 * optvar['P'][i - 1], 2 * optvar['Q'][i - 1],
-                                                          optvar['I'][i - 1] - optvar['U'][upstream_nodes[i]]))) -
-                           optvar['U'][upstream_nodes[i]] - optvar['I'][i - 1])
+
+        constraints.append(cvx.norm(cvx.vstack(2 * optvar['P'][i - 1], 2 * optvar['Q'][i - 1],
+                                               optvar['I'][i - 1] - optvar['U'][upstream_nodes[i]])) -
+                           optvar['U'][upstream_nodes[i]] - optvar['I'][i - 1] <= 0)
 
     return constraints
 
@@ -183,8 +184,8 @@ def network_limits_constraints(model, optvar, optpar):
         constraints.append(optvar['U'][i] <= model.NetworkModel.voltage_limit[1] ** 2)
         constraints.append(optvar['U'][i] >= model.NetworkModel.voltage_limit[0] ** 2)
 
-    constraints.append(optvar['U'][0] <= optpar['oltc_lim'][0])
-    constraints.append(optvar['U'][0] >= optpar['oltc_lim'][1])
+    constraints.append(optvar['U'][0] <= optpar['oltc_lim'][1] ** 2)
+    constraints.append(optvar['U'][0] >= optpar['oltc_lim'][0] ** 2)
 
     return constraints
 
@@ -201,7 +202,7 @@ def der_injection_constraints(model, optvar, optpar):
         | optpar : a dictionary containing cvxpy Parameter objects
 
     Returns :
-        A list of Constraint objects, with a length equal to the number of lines multiplied by 6
+        A list of Constraint objects, with a length equal to the number of lines multiplied by 4
     """
 
     # Initializing the constraints definition by obtaining the node count
@@ -214,21 +215,17 @@ def der_injection_constraints(model, optvar, optpar):
         constraints.append(cvx.square(optvar['Ppv'][i]) + cvx.square(optvar['Qpv'][i]) <=
                            model.DERModel.pv_inverter_power[i] ** 2)
         # add the constraints corresponding to the limit on apparent power of storage inverters
-        constraints.append(cvx.square(optvar['Pst'][i]) + cvx.square(optvar['Pst'][i]) <=
+        constraints.append(cvx.square(optvar['Pst'][i]) + cvx.square(optvar['Qst'][i]) <=
                            model.DERModel.storage_inverter_power[i] ** 2)
         # add the constraints corresponding to upper bound on PV active injection
         constraints.append(optvar['Ppv'][i] <= optpar['pv_set_points'][i])
         # add the constraints corresponding to lower bound on PV active injection
         constraints.append(optvar['Ppv'][i] >= 0)
-        # add the constraints corresponding to upper bound on storage active injection
-        constraints.append(optvar['Pst'][i] <= optpar['storage_upper_bounds'][i])
-        # add the constraints corresponding to lower bound on storage active injection
-        constraints.append(optvar['Pst'][i] >= optpar['storage_lower_bounds'][i])
 
     return constraints
 
 
-def obj_init(model, optvar, optpar, objtype):
+def set_objective(model, optvar, optpar, objtype):
     """
     This function defines the objective function, which is a minimization of sum of the losses in the network (r*I) and
     a term representing the distance to the set-points, either with a L-1 or L-2 norm
@@ -247,12 +244,35 @@ def obj_init(model, optvar, optpar, objtype):
         obj = cvx.Minimize(cvx.sum_entries(cvx.mul_elemwise(model.NetworkModel.resistance, optvar['I'])) +
                            cvx.norm(optvar['Ppv'] - optpar['pv_set_points'], 1) +
                            cvx.norm(optvar['Pst'] - optpar['storage_set_points'], 1))
-    else:
+    elif objtype == 'L2':
         obj = cvx.Minimize(cvx.sum_entries(cvx.mul_elemwise(model.NetworkModel.resistance, optvar['I'])) +
                            cvx.norm(optvar['Ppv'] - optpar['pv_set_points'], 2) +
                            cvx.norm(optvar['Pst'] - optpar['storage_set_points'], 2))
+    elif objtype == 'Loss':
+        obj = cvx.Minimize(cvx.sum_entries(cvx.mul_elemwise(model.NetworkModel.resistance, optvar['I'])))
+
+    else:
+        raise IOError("Invalid objtype parameter passed to opf_solve, choose between L1 and L2")
 
     return obj
+
+
+def parameter_update(optpar, model, step):
+    """
+    This function updates the value of the parameters for the targeted time step
+    :param optpar:
+    :param model:
+    :param step:
+    :return:
+    """
+
+    optpar['active_load'].value = model.LoadModel.active_load[step]
+    optpar['reactive_load'].value = model.LoadModel.reactive_load[step]
+    optpar['pv_set_points'].value = model.DERModel.pv_set_points[step]
+    optpar['storage_set_points'].value = model.DERModel.storage_set_points[step]
+    optpar['oltc_lim'].value = model.NetworkModel.oltc_constraints
+
+    return optpar
 
 
 def single_opf_solve(optim):
@@ -265,3 +285,27 @@ def single_opf_solve(optim):
     Returns :
         A list containing the results of the single step optimal power flow
     """
+
+
+def opf_solve(model, objtype, step=None):
+    """
+    This function creates an optimization problem cvxpy object by initializing the variable and parameter definitions
+    and then calling set_constraints and set_obj
+
+    """
+
+    # initializing the Variable and Parameter cvxpy objects
+    optvar = init_var(model)
+    optpar = init_par(model)
+
+    # defining the constraints and objective
+    constraints = set_constraints(model, optvar, optpar)
+    objective = set_objective(model, optvar, optpar, objtype)
+
+    opf_prob = cvx.Problem(objective, constraints)
+
+    optpar = parameter_update(optpar, model, step)
+
+    opf_prob.solve(verbose=True)
+
+    return [opf_prob]

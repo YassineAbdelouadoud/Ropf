@@ -47,3 +47,8 @@ docs/_build/
 
 # project files
 .idea/
+
+# install folder
+build
+dist
+Ropf.egg-info

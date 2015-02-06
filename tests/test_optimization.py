@@ -30,14 +30,12 @@ def test_init_par(init_model):
     assert isinstance(cvxpar['reactive_load'], cvx.Parameter)
     assert isinstance(cvxpar['pv_set_points'], cvx.Parameter)
     assert isinstance(cvxpar['storage_set_points'], cvx.Parameter)
-    assert isinstance(cvxpar['storage_upper_bounds'], cvx.Parameter)
-    assert isinstance(cvxpar['storage_lower_bounds'], cvx.Parameter)
+    assert isinstance(cvxpar['oltc_lim'], cvx.Parameter)
     assert cvxpar['active_load'].size == (10, 1)
     assert cvxpar['reactive_load'].size == (10, 1)
     assert cvxpar['pv_set_points'].size == (10, 1)
     assert cvxpar['storage_set_points'].size == (10, 1)
-    assert cvxpar['storage_upper_bounds'].size == (10, 1)
-    assert cvxpar['storage_lower_bounds'].size == (10, 1)
+    assert cvxpar['oltc_lim'].size == (2, 1)
 
 
 def test_power_flow_constraints(init_model):
@@ -70,4 +68,4 @@ def test_der_injection_constraints(init_model):
     for i in constraints:
         isinstance(i, cvx.constraints.eq_constraint.EqConstraint)
 
-    assert len(constraints) == 6*len(init_model.NetworkModel.resistance)
+    assert len(constraints) == 4*len(init_model.NetworkModel.resistance)

@@ -1,6 +1,8 @@
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 import sys
+from distutils.core import setup
+from Cython.Build import cythonize
 
 class PyTest(TestCommand):
     def finalize_options(self):
@@ -25,5 +27,10 @@ setup(
     author='Yassine Abdelouadoud',
     author_email='yassine.abdelouadoud@gmail.com',
     description='Optimal Power Flow in Radial Networks',
-    install_requires=["numpy", "cvxpy"]
+    install_requires=["numpy", "cvxpy"],
+    ext_modules=cythonize(
+                "powerflow.pyx",            # Cython source
+                sources=["network.cpp"],  # additional source file(s)
+                language="c++",             # generate C++ code
+                )
 )
