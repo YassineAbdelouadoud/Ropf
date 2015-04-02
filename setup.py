@@ -1,9 +1,12 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from distutils.core import setup
 from setuptools.command.test import test as TestCommand
 import sys
 from Cython.Build import cythonize
 from Cython.Distutils import build_ext
+from distutils.extension import Extension
 
+powerflow = Extension("ropf.powerflow", ["ropf/powerflow.pyx"], extra_compile_args=['/EHsc'])
 
 class PyTest(TestCommand):
     def finalize_options(self):
@@ -31,6 +34,6 @@ setup(
     author_email='yassine.abdelouadoud@gmail.com',
     description='Optimal Power Flow in Radial Networks',
     install_requires=["numpy", "cvxpy", "Cython"],
-    ext_modules=cythonize("ropf/powerflow/powerflow.pyx")
+    ext_modules=cythonize(powerflow)
     )
 
